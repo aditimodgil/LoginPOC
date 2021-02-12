@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment } from "react";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import { GlobalStyle } from "./components/helper";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { useSelector} from "react-redux";
+import {RootState} from "./redux/store";
 
-function App() {
+const App : React.FC = () =>{
+
+  const {userId,error,loading} = useSelector((state : RootState )=> state.auth);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        <Fragment>
+          <GlobalStyle />
+          <Switch>
+          <Route exact path="/" render={(props:any) => userId ? <Dashboard /> : <Redirect to="/login" />} />
+          {/* <Route path="/login" component={Dashboard} /> */}
+          <Route path="/login" render={(props:any)=><Login uid={userId} error={error} loading={loading} />} />
+          {/* <Route path="/register" component={Register} /> */}
+          <Route path="/register" render={()=><Register uid={userId} error={error} loading={loading}/>} />
+          </Switch>
+        </Fragment>
+      </Router>
+
   );
 }
 
